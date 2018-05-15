@@ -6,6 +6,8 @@ A popup field for django which can create\update\delete ForeignKey and ManyToMan
 - Django >= 2.0
 
 ### Demo
+![popup demo](https://www.yinkh.top/media/summer_note/20180515-170605-512.gif)
+
 You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
 
 ### TODO
@@ -124,6 +126,11 @@ You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
 	            kwargs = super(PostCreateView, self).get_form_kwargs()
 	            kwargs['request'] = self.request
 	            return kwargs
+	
+	And you need include button css in 'post/create.html' like:
+	
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'popup_field/button.css' %}">
 6. Custom your popup template, `popup/category/create.html`:
 
 		{% extends "popup/base.html" %}
