@@ -1,0 +1,102 @@
+{% load static %}
+<style>
+    #{{ widget.attrs.id }}_add, #{{ widget.attrs.id }}_change, #{{ widget.attrs.id }}_delete {
+        margin-top: 10px;
+        padding: 0 10px;
+        height: 25px;
+        line-height: 25px;
+    }
+</style>
+
+<script src="{% static 'jquery/jquery-2.1.3.min.js' %}"></script>
+<script src="{% static 'jquery/jquery.cookie.js' %}"></script>
+<script>
+    var layui_import = typeof layui !== typeof undefined;
+    if (!layui_import) {
+        $.getScript("{% static 'layer/layer.js' %}", function () {
+        });
+    }
+</script>
+{% include "django/forms/widgets/select.html" %}
+
+<div class="layui-btn-group">
+    {% if can_add %}<a class="layui-btn layui-btn-mini" id="{{ widget.attrs.id }}_add">新增</a>{% endif %}
+    {% if can_update %}<a class="layui-btn layui-btn-mini layui-btn-disabled layui-btn-normal"
+                          id="{{ widget.attrs.id }}_change">修改</a>{% endif %}
+    {% if can_delete %}<a class="layui-btn layui-btn-mini layui-btn-disabled layui-btn-danger"
+                          id="{{ widget.attrs.id }}_delete">删除</a>{% endif %}
+</div>
+
+<script>
+    $('#{{ widget.attrs.id }}_add').click(function () {
+        layer.open({
+            title: "添加{{ popup_name }}",
+            type: 2,
+            area: ['{{ width }}', '{{ height }}'],
+            content: '{{ add_url }}' + '?popup_name={{ popup_name }}&to_field={{ widget.attrs.id }}',
+            success: function (layer, index) {
+
+            }
+        });
+    });
+
+    $("#{{ widget.attrs.id }}_change").click(function () {
+        var id = $('#{{ widget.attrs.id }}').val();
+        if (id) {
+            layer.open({
+                title: "修改{{ popup_name }}",
+                type: 2,
+                area: ['{{ width }}', '{{ height }}'],
+                content: '{{ update_url }}' + id + '?popup_name={{ popup_name }}&to_field={{ widget.attrs.id }}',
+                success: function (layer, index) {
+
+                }
+            });
+        }
+    });
+
+    $("#{{ widget.attrs.id }}_delete").click(function () {
+        var id = $('#{{ widget.attrs.id }}').val();
+        var value = $('#{{ widget.attrs.id }} option[value=' + id + ']').text();
+        var indexGood = value.lastIndexOf('>');
+        var valueN = indexGood > 0 ? value.substring(indexGood + 1, value.length) : value;
+        if (id) {
+            layer.confirm('确认删除 ' + valueN + ' 吗?', {icon: 3, title: '删除{{ popup_name }}'}, function (index) {
+                $.ajax({
+                    type: "POST",
+                    data: {},
+                    url: '{{ delete_url }}' + id + '/',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                    },
+                    success: function (data, textStatus) {
+                        <!--关闭弹窗 返回列表 -->
+                        layer.close(index);
+                        $('#{{ widget.attrs.id }} option[value=' + data.id + ']').remove();
+                        $("#{{ widget.attrs.id }}_change,#{{ widget.attrs.id }}_delete").addClass('layui-btn-disabled');
+
+                        return false;
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.alert('删除失败 ' + XMLHttpRequest.responseText)
+                    }
+                });
+            });
+        }
+    });
+
+    /********select绑定change事件，如果value有值，就可修改及删除  页面加载完成之后做相同判断**********/
+    function {{ widget.attrs.id }}_isDisabled() {
+        if ($('#{{ widget.attrs.id }}').val()) {
+            $("#{{ widget.attrs.id }}_change,#{{ widget.attrs.id }}_delete").removeClass('layui-btn-disabled');
+        } else {
+            $("#{{ widget.attrs.id }}_change,#{{ widget.attrs.id }}_delete").addClass('layui-btn-disabled');
+        }
+    }
+
+    $('#{{ widget.attrs.id }}').change(function () {
+        {{ widget.attrs.id }}_isDisabled();
+    });
+
+    {{ widget.attrs.id }}_isDisabled();
+</script>

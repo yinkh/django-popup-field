@@ -1,0 +1,30 @@
+{% csrf_token %}
+{{ form.media }}
+{% for field in form %}
+    <div class="layui-form-item">
+        <label class="layui-form-label {% if field.field.required %}required{% endif %}"
+               style="text-align: left">
+            {{ field.label_tag }}
+        </label>
+
+        <div class="layui-input-block ">
+            {{ field }}
+
+            {% if field.help_text %}
+                <p class="help_text">{{ field.help_text|safe }}</p>
+            {% endif %}
+
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <p style="margin-top: 6px" class="text-danger">{{ error|safe }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form
+    });
+</script>

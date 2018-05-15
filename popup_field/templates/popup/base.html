@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <link rel="stylesheet" href="{% static 'layer/theme/default/layer.css' %}">
+    <script src="{% static 'jquery/jquery-2.1.3.min.js' %}"></script>
+
+    {% block css %} {% endblock %}
+</head>
+{% block js %}{% endblock %}
+<body style="background: white">
+{% block main %} {% endblock %}
+</body>
+
+</html>

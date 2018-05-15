@@ -1,0 +1,27 @@
+{% extends "popup/base.html" %}
+
+{% block main %}
+    <script>
+        var to_field = '#{{ to_field }}', op = '{{ op }}', id = '{{ id }}', value = '{{ value }}';
+        if (to_field) {
+            switch (op) {
+                case 'create':
+                    if (id) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                        $option = '<option value=' + id + ' selected>' + value + '</option>';
+                        $(to_field, window.parent.document).append($option);
+                        $(to_field + '_change,' + to_field + '_delete', window.parent.document).removeClass('layui-btn-disabled');
+                    }
+                    break;
+                case 'update':
+                    if (id) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                        $(to_field + ' option[value=' + id + ']', window.parent.document).html(value);
+                    }
+                    break;
+            }
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <!--手机html -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+    <link rel="stylesheet" href="{% static 'popup_crud/button.css' %}">
+    <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
+    {% block css %} {% endblock %}
+
+    <script src="{% static 'jquery/jquery-2.1.3.min.js' %}"></script>
+    <script src="{% static 'layui/layui.js' %}"></script>
+</head>
+
+<body style="background: white">
+<div class="layui-container" style="margin: 4px">
+    <form class="layui-form" enctype="multipart/form-data" action="{% url 'post_create' %}" method="post">
+        {% include 'post/form.html' %}
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn">新增</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+
+{% block js %}{% endblock %}
+</html>
