@@ -17,7 +17,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='django-popup-field',
     version=version,
-    description='A popup field for django which can create\update\delete ForeignKey and ManyToManyField instance by popup windows.',
+    description='A popup field for django which can create\\update\\delete ForeignKey and ManyToManyField instance by popup windows.',
     long_description=README + '\n\n' + HISTORY,
     license='BSD 3-Clause License',
     packages=[
@@ -31,7 +31,7 @@ setup(
     author_email='614457662@qq.com',
     keywords='django-popup-field',
     classifiers=[
-        'Development Status :: 0.1 - Alpha',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

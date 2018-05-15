@@ -5,6 +5,14 @@ A popup field for django which can create\update\delete ForeignKey and ManyToMan
 - Python3
 - Django >= 2.0
 
+### Demo
+You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
+
+### TODO
+- internationalization
+- optimize action in form
+- css override
+
 ### QuickStart
 
 1. Install django-popup-field with pip:
