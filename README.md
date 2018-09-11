@@ -75,9 +75,9 @@ You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
 		    template_name_create = 'popup/category/create.html'
 		    template_name_update = 'popup/category/update.html'
 		    permissions_required = {
-		    'create': ('post.add_category',),
-		    'update': ('post.update_category',),
-		    'delete': ('post.delete_category',)
+		        'create': ('post.add_category',),
+		        'update': ('post.update_category',),
+		        'delete': ('post.delete_category',)
 		    }
 	    
 	    class TagPopupCRUDViewSet(PopupCRUDViewSet):
@@ -109,6 +109,8 @@ You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
 			    fields = ['title', 'category', 'tags']
 			    widgets = {
 				    'category': CategoryPopupCRUDViewSet.get_fk_popup_field(),
+				    # if you want use custom template do like:
+				    # 'category':CategoryPopupCRUDViewSet.get_fk_popup_field(template_name='popup/foreign_key_select.html')
 				    'tags': TagPopupCRUDViewSet.get_m2m_popup_field(),
 			    }
             
@@ -133,58 +135,59 @@ You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
         <link rel="stylesheet" href="{% static 'popup_field/button.css' %}">
 6. Custom your popup template, `popup/category/create.html`:
 
-		{% extends "popup/base.html" %}
-		{% block css %}
-		{% endblock %}
-		
-		{% block js %}
-		{% endblock %}
-		
-		{% block main %}
-		    <div class="layui-container" style="margin: 4px">
-		        <form class="layui-form" enctype="multipart/form-data"
-		              action="{% url 'category_popup_create' %}{% if to_field %}?to_field={{ to_field }}{% endif %}"
-		              method="post">
-		            {% csrf_token %}
-					{{ form.media }}
-					{{ form }}
+        {% extends "popup/base.html" %}
+        {% block css %}
+        {% endblock %}
 
-		            <div class="layui-form-item">
-		                <div class="layui-input-block">
-		                    <button class="layui-btn">Add</button>
-		                </div>
-		            </div>
-		        </form>
-		    </div>
-		{% endblock %}
+        {% block js %}
+        {% endblock %}
+
+        {% block main %}
+            <div class="layui-container" style="margin: 4px">
+                <form class="layui-form" enctype="multipart/form-data"
+                      action="{% url 'category_popup_create' %}{% if to_field %}?to_field={{ to_field }}{% endif %}"
+                      method="post">
+
+                    {% csrf_token %}
+                    {{ form.media }}
+                    {{ form }}
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endblock %}
 
     `popup/category/update.html`:
 
-		{% extends "popup/base.html" %}
-		
-		{% block css %}
-		{% endblock %}
-		
-		{% block js %}
-		{% endblock %}
-		
-		{% block main %}
-		    <div class="layui-container" style="margin: 4px">
-		        <form class="layui-form" enctype="multipart/form-data"
-		              action="{% url 'category_popup_update' popup.id %}{% if to_field %}?to_field={{ to_field }}{% endif %}"
-		              method="post">
-		            {% csrf_token %}
-					{{ form.media }}
-					{{ form }}
+        {% extends "popup/base.html" %}
 
-		            <div class="layui-form-item">
-		                <div class="layui-input-block">
-		                    <button class="layui-btn">Edit</button>
-		                </div>
-		            </div>
-		        </form>
-		    </div>
-		{% endblock %}
+        {% block css %}
+        {% endblock %}
+
+        {% block js %}
+        {% endblock %}
+
+        {% block main %}
+            <div class="layui-container" style="margin: 4px">
+                <form class="layui-form" enctype="multipart/form-data"
+                      action="{% url 'category_popup_update' popup.id %}{% if to_field %}?to_field={{ to_field }}{% endif %}"
+                      method="post">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    {{ form }}
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn">Edit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endblock %}
 
 	The object_name inside template always is popup.The point is you must append `{% if to_field %}?to_field={{ to_field }}{% endif %}` after action or keep action blank.
 7. All url for popup create\update\delete is generate by `PopupCRUDViewSet`, `urls.py` :
@@ -198,7 +201,7 @@ You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
 		    TagPopupCRUDViewSet.urls(),
 		]
 
-	This will register the following urls:
+	this will register the following urls:
 
 		path('category/', include([
 	            path('popup/', cls.create(), name='category_popup_create'),

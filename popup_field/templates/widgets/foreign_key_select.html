@@ -25,10 +25,12 @@
 
 <div class="layui-btn-group">
     {% if can_add %}<a class="layui-btn layui-btn-mini" id="{{ widget.attrs.id }}_add">新增</a>{% endif %}
-    {% if can_update %}<a class="layui-btn layui-btn-mini layui-btn-disabled layui-btn-normal"
-                          id="{{ widget.attrs.id }}_change">修改</a>{% endif %}
-    {% if can_delete %}<a class="layui-btn layui-btn-mini layui-btn-disabled layui-btn-danger"
-                          id="{{ widget.attrs.id }}_delete">删除</a>{% endif %}
+    {% if can_update %}
+        <a class="layui-btn layui-btn-mini layui-btn-disabled layui-btn-normal" id="{{ widget.attrs.id }}_change">修改</a>
+    {% endif %}
+    {% if can_delete %}
+        <a class="layui-btn layui-btn-mini layui-btn-disabled layui-btn-danger" id="{{ widget.attrs.id }}_delete">删除</a>
+    {% endif %}
 </div>
 
 <script>
