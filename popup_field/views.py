@@ -201,7 +201,7 @@ class PopupCRUDViewSet(object):
         ]))
 
     @classonlymethod
-    def get_fk_popup_field(cls):
+    def get_fk_popup_field(cls, *args, **kwargs):
         """
         generate fk field related to class wait popup crud
         :param request:
@@ -209,11 +209,12 @@ class PopupCRUDViewSet(object):
         """
         class_name = cls.model.__name__.lower()
         class_verbose_name = cls.model._meta.verbose_name
-        return ForeignKeyWidget('{}_popup_create'.format(class_name),
-                                **{'popup_name': class_verbose_name, 'permissions_required': cls.permissions_required})
+        kwargs['popup_name'] = class_verbose_name
+        kwargs['permissions_required'] = cls.permissions_required
+        return ForeignKeyWidget('{}_popup_create'.format(class_name), *args, **kwargs)
 
     @classonlymethod
-    def get_m2m_popup_field(cls):
+    def get_m2m_popup_field(cls, *args, **kwargs):
         """
         generate m2m field related to class wait popup crud
         :param model_class:
@@ -221,8 +222,9 @@ class PopupCRUDViewSet(object):
         """
         class_name = cls.model.__name__.lower()
         class_verbose_name = cls.model._meta.verbose_name
-        return ManyToManyWidget('{}_popup_create'.format(class_name),
-                                **{'popup_name': class_verbose_name, 'permissions_required': cls.permissions_required})
+        kwargs['popup_name'] = class_verbose_name
+        kwargs['permissions_required'] = cls.permissions_required
+        return ManyToManyWidget('{}_popup_create'.format(class_name), *args, **kwargs)
 
     def get_permission_required(self, action):
         """

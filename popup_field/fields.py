@@ -6,6 +6,7 @@ class ForeignKeyWidget(Select):
     template_name = 'widgets/foreign_key_select.html'
 
     def __init__(self, url_template, *args, **kwargs):
+        self.template_name = kwargs.pop('template_name', self.template_name)
         self.popup_name = kwargs.pop('popup_name', '')
         self.permissions_required = kwargs.pop('permissions_required', '')
         self.request = kwargs.pop('request', None)
@@ -37,6 +38,7 @@ class ManyToManyWidget(SelectMultiple):
     template_name = 'widgets/many_to_many_select.html'
 
     def __init__(self, url_template, *args, **kwargs):
+        self.template_name = kwargs.pop('template_name', self.template_name)
         self.popup_name = kwargs.pop('popup_name', '')
         self.permissions_required = kwargs.pop('permissions_required', '')
         self.request = kwargs.pop('request', None)

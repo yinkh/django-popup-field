@@ -8,9 +8,13 @@
     }
 </style>
 
-<script src="{% static 'jquery/jquery-2.1.3.min.js' %}"></script>
 <script src="{% static 'jquery/jquery.cookie.js' %}"></script>
 <script>
+    if (!window.jQuery) {
+        $.getScript("{% static 'jquery/jquery-2.1.3.min.js' %}", function () {
+        });
+    }
+
     var layui_import = typeof layui !== typeof undefined;
     if (!layui_import) {
         $.getScript("{% static 'layer/layer.js' %}", function () {
