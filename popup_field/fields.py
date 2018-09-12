@@ -1,5 +1,11 @@
-from django.urls import reverse_lazy
+import django
+
 from django.forms.widgets import Select, SelectMultiple
+
+if django.VERSION >= (2, 0):
+    from django.urls import reverse_lazy
+else:
+    from django.core.urlresolvers import reverse_lazy
 
 
 class ForeignKeyWidget(Select):

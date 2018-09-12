@@ -1,9 +1,22 @@
-from django.urls import path, include
+import django
 from .views import *
 
-urlpatterns = [
-    path('', PostCreateView.as_view(), name='post_create'),
+if django.VERSION >= (2, 0):
+    from django.urls import path, include
 
-    CategoryPopupCRUDViewSet.urls(),
-    TagPopupCRUDViewSet.urls(),
-]
+    urlpatterns = [
+        path('', PostCreateView.as_view(), name='post_create'),
+
+        CategoryPopupCRUDViewSet.urls(),
+        TagPopupCRUDViewSet.urls(),
+    ]
+
+else:
+    from django.conf.urls import url, include
+
+    urlpatterns = [
+        url(r'^$', PostCreateView.as_view(), name='post_create'),
+
+        CategoryPopupCRUDViewSet.urls(),
+        TagPopupCRUDViewSet.urls(),
+    ]

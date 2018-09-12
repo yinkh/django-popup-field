@@ -34,6 +34,5 @@ class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
 class TagPopupCRUDViewSet(PopupCRUDViewSet):
     model = Tag
     form_class = TagForm
-    template_name = 'popup/update.html'
     template_name_create = 'popup/tag/create.html'
     template_name_update = 'popup/tag/update.html'

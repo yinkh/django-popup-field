@@ -3,7 +3,7 @@ A popup field for django which can create\update\delete ForeignKey and ManyToMan
 
 ### Requirements
 - Python3
-- Django >= 2.0
+- Django
 
 ### Demo
 ![popup demo](https://www.yinkh.top/media/summer_note/20180515-170605-512.gif)
