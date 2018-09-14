@@ -41,6 +41,7 @@ class TagForm(forms.ModelForm):
 class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
     model = Category
     form_class = CategoryForm
+    context_for_update = {'demo': 'demo1'}
     # parent_class = IsStaffUserMixin
     # template_name_create = 'popup/create.html'
     # template_name_update = 'popup/update.html'

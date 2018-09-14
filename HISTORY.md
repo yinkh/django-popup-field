@@ -19,3 +19,5 @@
 ### v 0.1.5
 - add class_name、class_verbose_name in PopupCRUDViewSet
 - remove popup_name inside create and update url
+- custom context for create and update
+- custom popup title and url name

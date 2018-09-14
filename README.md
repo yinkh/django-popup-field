@@ -75,11 +75,6 @@ You can get this demo at [popup.yinkh.top](http://popup.yinkh.top)
 		    form_class = CategoryForm
 		    template_name_create = 'popup/create.html'
 		    template_name_update = 'popup/update.html'
-		    permissions_required = {
-		        'create': ('post.add_category',),
-		        'update': ('post.update_category',),
-		        'delete': ('post.delete_category',)
-		    }
 
 	    class TagPopupCRUDViewSet(PopupCRUDViewSet):
 		    model = Tag
@@ -97,11 +92,6 @@ You can get this demo at [popup.yinkh.top](http://popup.yinkh.top)
 
 
 	    class PostForm(forms.ModelForm):
-		    def __init__(self, *args, **kwargs):
-		    request = kwargs.pop('request')
-		    super(PostForm, self).__init__(*args, **kwargs)
-		    self.fields['category'].widget.request = request
-		    self.fields['tags'].widget.request = request
 
 		    class Meta:
 			    model = Post
@@ -111,26 +101,7 @@ You can get this demo at [popup.yinkh.top](http://popup.yinkh.top)
 				    'tags': TagPopupCRUDViewSet.get_m2m_popup_field(),
 			    }
 
-5. The `request` kwarg passed to `form` is used for perms check,Only the request user has corresponding permissions then the corresponding button will showup,this is not necessary.
-
-	If you want check permissions for popup fields,you `views.py` should like:
-
-	    class PostCreateView(CreateView):
-	        raise_exception = True
-	        form_class = PostForm
-	        template_name = 'post/create.html'
-	        success_url = reverse_lazy('post_create')
-
-	        def get_form_kwargs(self):
-	            kwargs = super(PostCreateView, self).get_form_kwargs()
-	            kwargs['request'] = self.request
-	            return kwargs
-
-	And you need include button css in 'post/create.html' like:
-
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'popup_field/button.css' %}">
-6. Custom your popup template, `popup/create.html`:
+5. Custom your popup template, `popup/create.html`:
 
         {% extends "popup/base.html" %}
         {% block css %}
@@ -187,7 +158,7 @@ You can get this demo at [popup.yinkh.top](http://popup.yinkh.top)
         {% endblock %}
 
 	The `object_name` inside template always is `popup`.The point is you must append `{% if to_field %}?to_field={{ to_field }}{% endif %}` in form action or keep set as `"{{ request.path }}{% if to_field %}?to_field={{ to_field }}{% endif %}"`.
-7. All url for popup create\update\delete is generate by `PopupCRUDViewSet`, `urls.py` :
+6. All url for popup create\update\delete is generate by `PopupCRUDViewSet`, `urls.py` :
 
 		from .views import *
 
@@ -281,3 +252,68 @@ You can set parent class for `PopupCreateView、PopupUpdateView、PopupDeleteVie
 	    parent_class = IsStaffUserMixin
 
 The usage is set common permission check for `PopupCreateView、PopupUpdateView、PopupDeleteView`. In demo we will check whether the operator is a staff.
+
+#### Permission check for create、update、delete button
+You can set `permissions_required` in `CategoryPopupCRUDViewSet` for different operation, if the operator don't has corresponding permissions,then the corresponding button will be hide and the corresponding view will ask this permission when operation.
+
+If you want check permissions for popup fields, demo is here:
+
+`popups.py` should like:
+
+    class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
+	    model = Category
+	    form_class = CategoryForm
+	    template_name_create = 'popup/create.html'
+	    template_name_update = 'popup/update.html'
+	    permissions_required = {
+	        'create': ('post.add_category',),
+	        'update': ('post.update_category',),
+	        'delete': ('post.delete_category',)
+	    }
+
+
+`views.py` should like:
+
+
+    class PostCreateView(CreateView):
+        raise_exception = True
+        form_class = PostForm
+        template_name = 'post/create.html'
+        success_url = reverse_lazy('post_create')
+
+        def get_form_kwargs(self):
+            kwargs = super(PostCreateView, self).get_form_kwargs()
+            kwargs['request'] = self.request
+            return kwargs
+
+The `request` kwarg passed to `form` is used for perms check.
+
+`forms.py` should like:
+
+    class PostForm(forms.ModelForm):
+	    def __init__(self, *args, **kwargs):
+	    request = kwargs.pop('request')
+	    super(PostForm, self).__init__(*args, **kwargs)
+	    self.fields['category'].widget.request = request
+	    self.fields['tags'].widget.request = request
+
+		...
+
+#### Custom context for create and update
+
+	class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
+	    model = Category
+	    form_class = CategoryForm
+        context_for_create = {'operation': 'create'}
+	    context_for_update = {'operation': 'update'}
+
+#### Custom popup title and url name
+The default popup title is `operation+model's verbose_name`,you can custom `model's verbose_name` with:
+
+	class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
+	    class_verbose_name = 'Custom Category'
+
+The default url name is `model name's lower case+_popup_+operation`,you can custom `model name's lower case` with:
+
+	class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
+	    class_name = 'custom_category'

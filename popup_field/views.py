@@ -72,6 +72,8 @@ class PopupCRUDViewSet(object):
     template_name_update = None
     template_name_fk = None
     template_name_m2m = None
+    context_for_create = {}
+    context_for_update = {}
     # parent class for PopupCreateView、PopupUpdateView、PopupDeleteView
     parent_class = object
     """
@@ -136,7 +138,15 @@ class PopupCRUDViewSet(object):
             template_name = cls.get_template_name_create()
             permission_required = cls.get_permission_required('create')
 
+            def get_context_data(self, **kwargs):
+                kwargs.update(cls.context_for_create)
+                return super(NewPopupCreateView, self).get_context_data(**kwargs)
+
         return NewPopupCreateView
+
+    @staticmethod
+    def create_view_context(self, kwargs):
+        return kwargs
 
     @classonlymethod
     def update(cls):
@@ -151,6 +161,10 @@ class PopupCRUDViewSet(object):
             popup_name = cls.get_class_verbose_name()
             template_name = cls.get_template_name_update()
             permission_required = cls.get_permission_required('update')
+
+            def get_context_data(self, **kwargs):
+                kwargs.update(cls.context_for_update)
+                return super(NewPopupUpdateView, self).get_context_data(**kwargs)
 
         return NewPopupUpdateView
 
@@ -174,7 +188,7 @@ class PopupCRUDViewSet(object):
         generate url and url_name for create、update and delete view
         default url_name is classname_name
         """
-        class_name = cls.model.__name__.lower()
+        class_name = cls.get_class_name()
         if django.VERSION >= (2, 0):
             return path('{}/'.format(class_name), include([
                 path('popup/', cls.create().as_view(), name='{}_popup_create'.format(class_name)),
