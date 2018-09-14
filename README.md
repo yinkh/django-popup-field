@@ -304,6 +304,7 @@ The `request` kwarg passed to `form` is used for perms check.
 	class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
 	    model = Category
 	    form_class = CategoryForm
+	    context_for_all = {'data': 'all'}
         context_for_create = {'operation': 'create'}
 	    context_for_update = {'operation': 'update'}
 
