@@ -72,6 +72,7 @@ class PopupCRUDViewSet(object):
     template_name_update = None
     template_name_fk = None
     template_name_m2m = None
+    context_for_all = {}
     context_for_create = {}
     context_for_update = {}
     # parent class for PopupCreateView、PopupUpdateView、PopupDeleteView
@@ -139,6 +140,7 @@ class PopupCRUDViewSet(object):
             permission_required = cls.get_permission_required('create')
 
             def get_context_data(self, **kwargs):
+                kwargs.update(cls.context_for_all)
                 kwargs.update(cls.context_for_create)
                 return super(NewPopupCreateView, self).get_context_data(**kwargs)
 
@@ -163,6 +165,7 @@ class PopupCRUDViewSet(object):
             permission_required = cls.get_permission_required('update')
 
             def get_context_data(self, **kwargs):
+                kwargs.update(cls.context_for_all)
                 kwargs.update(cls.context_for_update)
                 return super(NewPopupUpdateView, self).get_context_data(**kwargs)
 

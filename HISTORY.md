@@ -21,3 +21,6 @@
 - remove popup_name inside create and update url
 - custom context for create and update
 - custom popup title and url name
+
+### v 0.1.6
+- add context_for_all in PopupCRUDViewSet
