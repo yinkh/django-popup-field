@@ -1,4 +1,5 @@
 import django
+from django.conf import settings
 from django.utils.decorators import classonlymethod
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -65,6 +66,10 @@ class PopupCRUDViewSet(object):
     form_class = None
     template_name_create = None
     template_name_update = None
+    template_name_fk = None
+    template_name_m2m = None
+    # parent class for PopupCreateView、PopupUpdateView、PopupDeleteView
+    parent_class = object
     """
     permissions_required = {
         'create': ('post.add_category',),
@@ -76,16 +81,40 @@ class PopupCRUDViewSet(object):
     permissions_required = {}
 
     @classonlymethod
+    def get_template_name_create(cls):
+        if cls.template_name_create is None:
+            template_name = getattr(settings, 'POPUP_TEMPLATE_NAME_CREATE')
+            if template_name is None:
+                raise ImproperlyConfigured('You must set template_name_create in PopupCRUDViewSet or '
+                                           'set POPUP_TEMPLATE_NAME_CREATE in django settings')
+            else:
+                return template_name
+        else:
+            return cls.template_name_create
+
+    @classonlymethod
+    def get_template_name_update(cls):
+        if cls.template_name_update is None:
+            template_name = getattr(settings, 'POPUP_TEMPLATE_NAME_UPDATE')
+            if template_name is None:
+                raise ImproperlyConfigured('You must set template_name_update in PopupCRUDViewSet or '
+                                           'set POPUP_TEMPLATE_NAME_UPDATE in django settings')
+            else:
+                return template_name
+        else:
+            return cls.template_name_update
+
+    @classonlymethod
     def create(cls):
         """
         Returns the create view that can be specified as the second argument
         to url() in urls.py.
         """
 
-        class NewPopupCreateView(PopupCreateView):
+        class NewPopupCreateView(PopupCreateView, cls.parent_class):
             model = cls.model
             form_class = cls.form_class
-            template_name = cls.template_name_create
+            template_name = cls.get_template_name_create()
             permission_required = cls.get_permission_required('create')
 
         return NewPopupCreateView
@@ -97,10 +126,10 @@ class PopupCRUDViewSet(object):
         to url() in urls.py.
         """
 
-        class NewPopupUpdateView(PopupUpdateView):
+        class NewPopupUpdateView(PopupUpdateView, cls.parent_class):
             model = cls.model
             form_class = cls.form_class
-            template_name = cls.template_name_update
+            template_name = cls.get_template_name_update()
             permission_required = cls.get_permission_required('update')
 
         return NewPopupUpdateView
@@ -112,7 +141,7 @@ class PopupCRUDViewSet(object):
         to url() in urls.py.
         """
 
-        class PopupDeleteViewView(PopupDeleteView):
+        class PopupDeleteViewView(PopupDeleteView, cls.parent_class):
             model = cls.model
             form_class = cls.form_class
             permission_required = cls.get_permission_required('delete')
@@ -148,6 +177,8 @@ class PopupCRUDViewSet(object):
         class_verbose_name = cls.model._meta.verbose_name
         kwargs['popup_name'] = class_verbose_name
         kwargs['permissions_required'] = cls.permissions_required
+        if cls.template_name_fk is not None:
+            kwargs['template_name'] = cls.template_name_fk
         return ForeignKeyWidget('{}_popup_create'.format(class_name), *args, **kwargs)
 
     @classonlymethod
@@ -159,6 +190,8 @@ class PopupCRUDViewSet(object):
         class_verbose_name = cls.model._meta.verbose_name
         kwargs['popup_name'] = class_verbose_name
         kwargs['permissions_required'] = cls.permissions_required
+        if cls.template_name_m2m is not None:
+            kwargs['template_name'] = cls.template_name_m2m
         return ManyToManyWidget('{}_popup_create'.format(class_name), *args, **kwargs)
 
     @classonlymethod

@@ -1,5 +1,4 @@
 {% extends "popup/base.html" %}
-
 {% block css %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
@@ -12,12 +11,13 @@
 {% block main %}
     <div class="layui-container" style="margin: 4px">
         <form class="layui-form" enctype="multipart/form-data"
-              action="{% url 'category_popup_update' popup.id %}{% if to_field %}?to_field={{ to_field }}{% endif %}"
+              action="{{ request.path }}{% if to_field %}?to_field={{ to_field }}{% endif %}"
               method="post">
             {% include 'post/form.html' %}
+
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button class="layui-btn">修改</button>
+                    <button class="layui-btn">新增</button>
                 </div>
             </div>
         </form>

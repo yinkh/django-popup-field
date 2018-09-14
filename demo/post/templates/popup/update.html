@@ -12,7 +12,7 @@
 {% block main %}
     <div class="layui-container" style="margin: 4px">
         <form class="layui-form" enctype="multipart/form-data"
-              action="{% url 'tag_popup_update' popup.id %}{% if to_field %}?to_field={{ to_field }}{% endif %}"
+              action="{{ request.path }}{% if to_field %}?to_field={{ to_field }}{% endif %}"
               method="post">
             {% include 'post/form.html' %}
             <div class="layui-form-item">

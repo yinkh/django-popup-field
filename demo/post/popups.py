@@ -1,7 +1,21 @@
 from django import forms
 from popup_field.views import PopupCRUDViewSet
+from django.contrib.auth.mixins import AccessMixin
 
 from .models import *
+
+
+class IsStaffUserMixin(AccessMixin):
+    """
+    request must be staff
+    """
+    raise_exception = True
+    permission_denied_message = 'You are not a staff'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return self.handle_no_permission()
+        return super(IsStaffUserMixin, self).dispatch(request, *args, **kwargs)
 
 
 class CategoryForm(forms.ModelForm):
@@ -27,12 +41,14 @@ class TagForm(forms.ModelForm):
 class CategoryPopupCRUDViewSet(PopupCRUDViewSet):
     model = Category
     form_class = CategoryForm
-    template_name_create = 'popup/category/create.html'
-    template_name_update = 'popup/category/update.html'
+    # parent_class = IsStaffUserMixin
+    # template_name_create = 'popup/create.html'
+    # template_name_update = 'popup/update.html'
 
 
 class TagPopupCRUDViewSet(PopupCRUDViewSet):
     model = Tag
     form_class = TagForm
-    template_name_create = 'popup/tag/create.html'
-    template_name_update = 'popup/tag/update.html'
+    # parent_class = IsStaffUserMixin
+    # template_name_create = 'popup/create.html'
+    # template_name_update = 'popup/update.html'
