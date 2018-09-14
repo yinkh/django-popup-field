@@ -1,14 +1,15 @@
 ## django-popup-field
-A popup field for django which can create\update\delete ForeignKey and ManyToManyField instance by popup windows.
+A popup field for django which can create、update、delete `ForeignKey` and `ManyToManyField` instance by popup windows.
 
 ### Requirements
 - Python3
 - Django
 
 ### Demo
-![popup demo](https://www.yinkh.top/media/summer_note/20180515-170605-512.gif)
 
-You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
+You can get this demo at [popup.yinkh.top](http://popup.yinkh.top)
+
+![popup demo](https://www.yinkh.top/media/summer_note/20180515-170605-512.gif)
 
 ### TODO
 - internationalization
@@ -17,11 +18,11 @@ You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
 
 ### QuickStart
 
-1. Install django-popup-field with pip:
+1. Install `django-popup-field` with pip:
 
        pip install django-popup-field
-    
-2. Install the dependencies django-popup-field to INSTALLED_APPS in your project's settings.py:
+
+2. Install the dependencies `django-popup-field` to `INSTALLED_APPS` in your project's `settings.py`:
 
        INSTALLED_APPS = [
            ...

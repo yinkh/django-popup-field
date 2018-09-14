@@ -21,6 +21,7 @@
         });
     }
 </script>
+
 {% include "django/forms/widgets/select.html" %}
 
 <div class="layui-btn-group">
@@ -39,7 +40,7 @@
             title: "添加{{ popup_name }}",
             type: 2,
             area: ['{{ width }}', '{{ height }}'],
-            content: '{{ add_url }}' + '?popup_name={{ popup_name }}&to_field={{ widget.attrs.id }}',
+            content: '{{ add_url }}' + '?to_field={{ widget.attrs.id }}',
             success: function (layer, index) {
 
             }
@@ -53,7 +54,7 @@
                 title: "修改{{ popup_name }}",
                 type: 2,
                 area: ['{{ width }}', '{{ height }}'],
-                content: '{{ update_url }}' + id + '?popup_name={{ popup_name }}&to_field={{ widget.attrs.id }}',
+                content: '{{ update_url }}' + id + '?to_field={{ widget.attrs.id }}',
                 success: function (layer, index) {
 
                 }

@@ -15,3 +15,7 @@
 - add default POPUP_TEMPLATE_NAME_CREATE、POPUP_TEMPLATE_NAME_UPDATE in setting
 - add template_name_fk、template_name_m2m in PopupCRUDViewSet
 - add parent_class in PopupCRUDViewSet
+
+### v 0.1.5
+- add class_name、class_verbose_name in PopupCRUDViewSet
+- remove popup_name inside create and update url

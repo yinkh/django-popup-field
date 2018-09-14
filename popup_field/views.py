@@ -15,11 +15,12 @@ else:
 
 
 class PopupCreateView(PermissionRequiredMixin, CreateView):
+    popup_name = None
 
     def get_context_data(self, **kwargs):
         if 'to_field' in self.request.GET:
             kwargs['to_field'] = self.request.GET['to_field']
-        kwargs['popup_name'] = self.request.GET['popup_name']
+        kwargs['popup_name'] = self.popup_name
         return super(PopupCreateView, self).get_context_data(**kwargs)
 
     def form_valid(self, form):
@@ -33,11 +34,12 @@ class PopupCreateView(PermissionRequiredMixin, CreateView):
 class PopupUpdateView(PermissionRequiredMixin, UpdateView):
     slug_field = 'id'
     context_object_name = 'popup'
+    popup_name = None
 
     def get_context_data(self, **kwargs):
         if 'to_field' in self.request.GET:
             kwargs['to_field'] = self.request.GET['to_field']
-        kwargs['popup_name'] = self.request.GET['popup_name']
+        kwargs['popup_name'] = self.popup_name
         return super(PopupUpdateView, self).get_context_data(**kwargs)
 
     def form_valid(self, form):
@@ -64,6 +66,8 @@ class PopupDeleteView(PermissionRequiredMixin, DeleteView):
 class PopupCRUDViewSet(object):
     model = None
     form_class = None
+    class_name = None
+    class_verbose_name = None
     template_name_create = None
     template_name_update = None
     template_name_fk = None
@@ -83,7 +87,7 @@ class PopupCRUDViewSet(object):
     @classonlymethod
     def get_template_name_create(cls):
         if cls.template_name_create is None:
-            template_name = getattr(settings, 'POPUP_TEMPLATE_NAME_CREATE')
+            template_name = getattr(settings, 'POPUP_TEMPLATE_NAME_CREATE', None)
             if template_name is None:
                 raise ImproperlyConfigured('You must set template_name_create in PopupCRUDViewSet or '
                                            'set POPUP_TEMPLATE_NAME_CREATE in django settings')
@@ -95,7 +99,7 @@ class PopupCRUDViewSet(object):
     @classonlymethod
     def get_template_name_update(cls):
         if cls.template_name_update is None:
-            template_name = getattr(settings, 'POPUP_TEMPLATE_NAME_UPDATE')
+            template_name = getattr(settings, 'POPUP_TEMPLATE_NAME_UPDATE', None)
             if template_name is None:
                 raise ImproperlyConfigured('You must set template_name_update in PopupCRUDViewSet or '
                                            'set POPUP_TEMPLATE_NAME_UPDATE in django settings')
@@ -103,6 +107,20 @@ class PopupCRUDViewSet(object):
                 return template_name
         else:
             return cls.template_name_update
+
+    @classonlymethod
+    def get_class_name(cls):
+        if cls.class_name is None:
+            return cls.model.__name__.lower()
+        else:
+            return cls.class_name
+
+    @classonlymethod
+    def get_class_verbose_name(cls):
+        if cls.class_verbose_name is None:
+            return cls.model._meta.verbose_name
+        else:
+            return cls.class_verbose_name
 
     @classonlymethod
     def create(cls):
@@ -114,6 +132,7 @@ class PopupCRUDViewSet(object):
         class NewPopupCreateView(PopupCreateView, cls.parent_class):
             model = cls.model
             form_class = cls.form_class
+            popup_name = cls.get_class_verbose_name()
             template_name = cls.get_template_name_create()
             permission_required = cls.get_permission_required('create')
 
@@ -129,6 +148,7 @@ class PopupCRUDViewSet(object):
         class NewPopupUpdateView(PopupUpdateView, cls.parent_class):
             model = cls.model
             form_class = cls.form_class
+            popup_name = cls.get_class_verbose_name()
             template_name = cls.get_template_name_update()
             permission_required = cls.get_permission_required('update')
 
@@ -173,26 +193,22 @@ class PopupCRUDViewSet(object):
         """
         generate fk field related to class wait popup crud
         """
-        class_name = cls.model.__name__.lower()
-        class_verbose_name = cls.model._meta.verbose_name
-        kwargs['popup_name'] = class_verbose_name
+        kwargs['popup_name'] = cls.get_class_verbose_name()
         kwargs['permissions_required'] = cls.permissions_required
         if cls.template_name_fk is not None:
             kwargs['template_name'] = cls.template_name_fk
-        return ForeignKeyWidget('{}_popup_create'.format(class_name), *args, **kwargs)
+        return ForeignKeyWidget('{}_popup_create'.format(cls.get_class_name()), *args, **kwargs)
 
     @classonlymethod
     def get_m2m_popup_field(cls, *args, **kwargs):
         """
         generate m2m field related to class wait popup crud
         """
-        class_name = cls.model.__name__.lower()
-        class_verbose_name = cls.model._meta.verbose_name
-        kwargs['popup_name'] = class_verbose_name
+        kwargs['popup_name'] = cls.get_class_verbose_name()
         kwargs['permissions_required'] = cls.permissions_required
         if cls.template_name_m2m is not None:
             kwargs['template_name'] = cls.template_name_m2m
-        return ManyToManyWidget('{}_popup_create'.format(class_name), *args, **kwargs)
+        return ManyToManyWidget('{}_popup_create'.format(cls.get_class_name()), *args, **kwargs)
 
     @classonlymethod
     def get_permission_required(cls, action):
