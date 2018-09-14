@@ -86,13 +86,6 @@ You can get a demo in [popup.yinkh.top](http://popup.yinkh.top)
 		    template_name_create = 'popup/create.html'
 		    template_name_update = 'popup/update.html'
 
-  	`template_name_create` is the template used for create popup window, `template_name_update` is the template used for update popup window.
-  	You can set default `template_name_create` and `template_name_update` in settings like:
-
-        POPUP_TEMPLATE_NAME_CREATE = 'popup/create.html'
-        POPUP_TEMPLATE_NAME_UPDATE = 'popup/update.html'
-
-    `PopupCRUDViewSet` will use this as default `template_name_create` and `template_name_update` if you don't have a special assignment in `PopupCRUDViewSet`.
 
 4. Change widget for category and tag used in `forms.py`:
 
